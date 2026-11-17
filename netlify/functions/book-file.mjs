@@ -1,5 +1,6 @@
 import {getUser} from '@netlify/identity';
 import {getStore} from '@netlify/blobs';
+import {isProductionRequest} from '../../shared/deployment.mjs';
 import {emailKey,canReadBook,validBookId,mutateServerState} from '../../shared/policy.mjs';
 const H={'Cache-Control':'private, no-store, max-age=0','X-Content-Type-Options':'nosniff'};
 const json=(obj,status=200)=>Response.json(obj,{status,headers:H});
@@ -8,7 +9,7 @@ const F=()=>getStore('gard-book-files-v1');
 const validPdf=(buffer)=>{const b=new Uint8Array(buffer); return b.length>=8&&String.fromCharCode(...b.slice(0,5))==='%PDF-';};
 
 export default async function handler(request){
-  if(process.env.CONTEXT!=='production')return json({error:'프리뷰에서는 BOOK 파일에 접근할 수 없습니다.'},403);
+  if(!isProductionRequest(request))return json({error:'프리뷰에서는 BOOK 파일에 접근할 수 없습니다.'},403);
   if(!process.env.GARD_OWNER_EMAIL)return json({error:'오너 환경 설정이 없습니다.'},503);
   let user;
   try{user=await getUser();}catch{return json({error:'인증 실패'},401);}
