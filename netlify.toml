@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+[build.environment]
+  NODE_VERSION = "22"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Cache-Control = "no-store"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+
+# No BOOK records are present under dist/public. All private data enters via owner-only import.
+# Enable Netlify Identity with invite-only registration in the Netlify dashboard.
+# Configure GARD_OWNER_EMAIL in Netlify runtime environment variables (not in GitHub).

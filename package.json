@@ -1,0 +1,10 @@
+{
+  "name":"gard-book-asset-library",
+  "version":"1.0.0",
+  "private":true,
+  "type":"module",
+  "scripts":{"dev":"vite --host 127.0.0.1","build":"vite build","preview":"vite preview --host 127.0.0.1","test":"node --test tests/*.test.mjs"},
+  "dependencies":{"@netlify/identity":"2.0.1","@netlify/blobs":"11.1.8"},
+  "devDependencies":{"vite":"^7.1.0"},
+  "engines":{"node":">=20"}
+}
