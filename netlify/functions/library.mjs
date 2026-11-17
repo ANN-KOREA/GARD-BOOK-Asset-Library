@@ -1,5 +1,6 @@
 import { getUser } from '@netlify/identity';
 import { getStore } from '@netlify/blobs';
+import { isProductionRequest } from '../../shared/deployment.mjs';
 import { EMPTY_SERVER_STATE, emailKey, subscriberVisibleBooks, mutateServerState } from '../../shared/policy.mjs';
 
 const HEADERS={'Cache-Control':'no-store, private','Pragma':'no-cache','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'"};
@@ -9,7 +10,7 @@ const store=()=>getStore('gard-book-published-v1');
 const storageRead=async()=> (await store().get('state',{type:'json',consistency:'strong'})) ?? EMPTY_SERVER_STATE();
 
 export default async function handler(request) {
-  if(process.env.CONTEXT!=='production') return reply({error:'실제 구독 서비스는 production에서만 사용합니다. 미리보기에서 실데이터 접근을 차단했습니다.'},403);
+  if(!isProductionRequest(request)) return reply({error:'실제 구독 서비스는 production에서만 사용합니다. 미리보기에서 실데이터 접근을 차단했습니다.'},403);
   if(!process.env.GARD_OWNER_EMAIL) return reply({error:'Netlify 환경변수 GARD_OWNER_EMAIL을 먼저 지정하세요.'},503);
   let user;
   try { user=await getUser(); } catch { return reply({error:'로그인 검증을 완료할 수 없습니다.'},401); }
